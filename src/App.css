@@ -1,11 +1,23 @@
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
 /* Hero Section */
 .hero {
   min-height: 100vh;
   display: flex;
   align-items: center;
   position: relative;
-  padding-top: 80px;
-  /* Header space */
+  padding-top: 150px;
+  /* Header space - increased for bigger logo */
   overflow: hidden;
 }
 
@@ -21,7 +33,7 @@
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 20px 0;
+  padding: 10px 0;
   z-index: 100;
   background: rgba(13, 13, 13, 0.7);
   backdrop-filter: var(--glass-blur);
@@ -620,7 +632,7 @@ footer {
 
 @media (max-width: 768px) {
   .hero {
-    padding-top: 100px;
+    padding-top: 160px;
   }
 
   .news-grid {

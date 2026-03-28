@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Smartphone,
@@ -26,13 +26,17 @@ const devices = [
   { id: 'pc', icon: Laptop, name: 'PC / Mac' },
 ];
 
-const newsFeed = [
+// ⚠️ Reemplaza con tu API key gratuita de https://gnews.io
+const GNEWS_API_KEY = 'TU_API_KEY_AQUI';
+
+const FALLBACK_NEWS = [
   {
     id: 1,
-    title: 'Samsung Galaxy S24 Ultra: ¿Vale la pena actualziarse?',
-    category: 'Reviews',
-    image: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?q=80&w=800&auto=format&fit=crop',
-    date: 'Hace 2 horas',
+    title: 'Uber invierte 1.250 millones en Rivian para lanzar 50.000 robotaxis eléctricos',
+    category: 'IA & Movilidad',
+    image: '/news-robotaxi.png',
+    date: 'Hoy',
+    url: 'https://techcrunch.com',
   },
   {
     id: 2,
@@ -40,13 +44,15 @@ const newsFeed = [
     category: 'Guías de Reparación',
     image: 'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?q=80&w=800&auto=format&fit=crop',
     date: 'Hace 5 horas',
+    url: 'https://ifixit.com',
   },
   {
     id: 3,
-    title: 'Oferta flash: Monitor Gaming 144Hz a precio de chollo en Amazon',
-    category: 'Ofertas',
-    image: 'https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc?q=80&w=800&auto=format&fit=crop',
-    date: 'Ayer',
+    title: 'Samsung Galaxy Book6 Ultra llega con GPU RTX 5070 e IA integrada',
+    category: 'Lanzamientos',
+    image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop',
+    date: 'Hoy',
+    url: 'https://theverge.com',
   },
 ];
 
@@ -73,6 +79,49 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [formStep, setFormStep] = useState(1);
+  const [newsFeed, setNewsFeed] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [featuredNews, setFeaturedNews] = useState(null);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      if (GNEWS_API_KEY === 'TU_API_KEY_AQUI') {
+        setNewsFeed(FALLBACK_NEWS);
+        setFeaturedNews(FALLBACK_NEWS[0]);
+        setNewsLoading(false);
+        return;
+      }
+      try {
+        const res = await fetch(
+          `https://gnews.io/api/v4/top-headlines?category=technology&lang=es&max=4&apikey=${GNEWS_API_KEY}`
+        );
+        const data = await res.json();
+        if (data.articles && data.articles.length > 0) {
+          const articles = data.articles.map((a, i) => ({
+            id: i + 1,
+            title: a.title,
+            category: 'Tecnología',
+            image: a.image || `https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop`,
+            date: new Date(a.publishedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
+            url: a.url,
+            source: a.source?.name || 'Tech News',
+          }));
+          setFeaturedNews(articles[0]);
+          setNewsFeed(articles.slice(1, 4));
+        } else {
+          setNewsFeed(FALLBACK_NEWS);
+          setFeaturedNews(FALLBACK_NEWS[0]);
+        }
+      } catch (err) {
+        console.error('Error cargando noticias:', err);
+        setNewsFeed(FALLBACK_NEWS);
+        setFeaturedNews(FALLBACK_NEWS[0]);
+      } finally {
+        setNewsLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
 
   const openModal = (deviceId = null) => {
     setSelectedDevice(deviceId);
@@ -99,7 +148,7 @@ function App() {
       <nav className="navbar">
         <div className="nav-container">
           <div className="nav-logo">
-            <img src="/logo.png" alt="EVC EDfix" style={{ height: '65px', width: 'auto' }} />
+            <img src="/logo.png" alt="EVC EDfix" style={{ height: '100px', width: 'auto' }} />
           </div>
           <div className="nav-links">
             <a href="#taller" className="nav-link">Taller de Reparación</a>
@@ -157,15 +206,16 @@ function App() {
               initial={{ opacity: 0, x: 50, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              style={{ backgroundImage: `url('https://images.unsplash.com/photo-1600080846061-fcdb9cfd4144?q=80&w=1200&auto=format&fit=crop')` }}
+              style={{ backgroundImage: `url('${featuredNews?.image || '/news-robotaxi.png'}')`, cursor: featuredNews?.url ? 'pointer' : 'default' }}
+              onClick={() => featuredNews?.url && window.open(featuredNews.url, '_blank', 'noopener,noreferrer')}
             >
               <div className="news-card-overlay">
-                <span className="tag">Lanzamientos</span>
-                <h3 className="news-card-title text-gradient">Apple Vision Pro: El futuro ya está aquí</h3>
+                <span className="tag">Noticia del día</span>
+                <h3 className="news-card-title text-gradient">{featuredNews?.title || 'Cargando noticia...'}</h3>
                 <div className="news-card-meta">
-                  <span>Por Valerio EVC</span>
+                  <span>{featuredNews?.source || 'EVCanal'}</span>
                   <span>•</span>
-                  <span>Lectura de 5 min</span>
+                  <span>{featuredNews?.date || ''}</span>
                 </div>
               </div>
             </motion.div>
@@ -348,31 +398,53 @@ function App() {
             <button className="btn-outline">Ver más noticias</button>
           </div>
 
-          <motion.div
-            className="news-grid"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={staggerContainer}
-          >
-            {newsFeed.map((news) => (
-              <motion.article key={news.id} className="news-item" variants={revealVariants}>
-                <div className="news-image-wrapper">
-                  <span className="tag">{news.category}</span>
-                  <img src={news.image} alt={news.title} className="news-image" />
-                </div>
-                <div className="news-content">
-                  <h4 className="news-title">{news.title}</h4>
-                  <div className="news-footer">
-                    <span>{news.date}</span>
-                    <a href="#" className="read-more">
-                      Leer <ArrowRight size={16} />
-                    </a>
+          {newsLoading ? (
+            <div className="news-grid">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="news-item" style={{ minHeight: '350px' }}>
+                  <div style={{ height: '220px', background: 'rgba(255,255,255,0.05)', borderRadius: '0', animation: 'pulse 1.5s infinite' }} />
+                  <div style={{ padding: '25px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ height: '16px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', width: '90%', animation: 'pulse 1.5s infinite' }} />
+                    <div style={{ height: '16px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', width: '70%', animation: 'pulse 1.5s infinite' }} />
                   </div>
                 </div>
-              </motion.article>
-            ))}
-          </motion.div>
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              className="news-grid"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={staggerContainer}
+            >
+              {newsFeed.map((news) => (
+                <motion.article
+                  key={news.id}
+                  className="news-item"
+                  variants={revealVariants}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => news.url && window.open(news.url, '_blank', 'noopener,noreferrer')}
+                >
+                  <div className="news-image-wrapper">
+                    <span className="tag">{news.category}</span>
+                    <img src={news.image} alt={news.title} className="news-image"
+                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop'; }}
+                    />
+                  </div>
+                  <div className="news-content">
+                    <h4 className="news-title">{news.title}</h4>
+                    <div className="news-footer">
+                      <span>{news.date}</span>
+                      <span className="read-more">
+                        Leer <ArrowRight size={16} />
+                      </span>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </motion.div>
+          )}
         </section>
 
         {/* Ubicación / Tienda Física */}
@@ -471,7 +543,7 @@ function App() {
         <div className="container">
           <div className="footer-content">
             <div className="nav-logo">
-              <img src="/logo.png" alt="EVC EDfix" style={{ height: '85px', width: 'auto', marginBottom: '10px' }} />
+              <img src="/logo.png" alt="EVC EDfix" style={{ height: '120px', width: 'auto', marginBottom: '10px' }} />
               <p style={{ color: 'var(--text-secondary)', marginTop: '10px', fontSize: '0.9rem', maxWidth: '300px' }}>
                 El taller de reparación que tu tecnología merece. Especialistas en Málaga.
               </p>
