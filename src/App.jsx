@@ -94,6 +94,7 @@ function App() {
   const [newsFeed, setNewsFeed] = useState([]);
   const [newsLoading, setNewsLoading] = useState(true);
   const [featuredNews, setFeaturedNews] = useState(null);
+  const [visibleNewsCount, setVisibleNewsCount] = useState(3);
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState(null);
   const formRef = useRef(null);
@@ -108,7 +109,7 @@ function App() {
       }
       try {
         const res = await fetch(
-          `https://gnews.io/api/v4/top-headlines?category=technology&lang=es&max=4&apikey=${GNEWS_API_KEY}`
+          `https://gnews.io/api/v4/top-headlines?category=technology&lang=es&country=es&max=10&apikey=${GNEWS_API_KEY}`
         );
         const data = await res.json();
         if (data.articles && data.articles.length > 0) {
@@ -122,7 +123,7 @@ function App() {
             source: a.source?.name || 'Tech News',
           }));
           setFeaturedNews(articles[0]);
-          setNewsFeed(articles.slice(1, 4));
+          setNewsFeed(articles.slice(1)); // Guardamos el resto
         } else {
           setNewsFeed(FALLBACK_NEWS);
           setFeaturedNews(FALLBACK_NEWS[0]);
@@ -177,6 +178,10 @@ function App() {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleLoadMoreNews = () => {
+    setVisibleNewsCount((prev) => prev + 3);
   };
 
   return (
@@ -434,7 +439,11 @@ function App() {
                 Lo último en tecnología, analizado por nosotros
               </motion.p>
             </div>
-            <button className="btn-outline">Ver más noticias</button>
+            {visibleNewsCount < newsFeed.length && (
+              <button className="btn-outline" onClick={handleLoadMoreNews}>
+                Ver más noticias
+              </button>
+            )}
           </div>
 
           {newsLoading ? (
@@ -450,39 +459,37 @@ function App() {
               ))}
             </div>
           ) : (
-            <motion.div
-              className="news-grid"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={staggerContainer}
-            >
-              {newsFeed.map((news) => (
-                <motion.article
-                  key={news.id}
-                  className="news-item"
-                  variants={revealVariants}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => news.url && window.open(news.url, '_blank', 'noopener,noreferrer')}
-                >
-                  <div className="news-image-wrapper">
-                    <span className="tag">{news.category}</span>
-                    <img src={news.image} alt={news.title} className="news-image"
-                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop'; }}
-                    />
-                  </div>
-                  <div className="news-content">
-                    <h4 className="news-title">{news.title}</h4>
-                    <div className="news-footer">
-                      <span>{news.date}</span>
-                      <span className="read-more">
-                        Leer <ArrowRight size={16} />
-                      </span>
+            <div className="news-grid">
+              <AnimatePresence>
+                {newsFeed.slice(0, visibleNewsCount).map((news, index) => (
+                  <motion.article
+                    key={news.id}
+                    className="news-item"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: (index % 3) * 0.1 }}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => news.url && window.open(news.url, '_blank', 'noopener,noreferrer')}
+                  >
+                    <div className="news-image-wrapper">
+                      <span className="tag">{news.category}</span>
+                      <img src={news.image} alt={news.title} className="news-image"
+                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop'; }}
+                      />
                     </div>
-                  </div>
-                </motion.article>
-              ))}
-            </motion.div>
+                    <div className="news-content">
+                      <h4 className="news-title">{news.title}</h4>
+                      <div className="news-footer">
+                        <span>{news.date}</span>
+                        <span className="read-more">
+                          Leer <ArrowRight size={16} />
+                        </span>
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </AnimatePresence>
+            </div>
           )}
         </section>
 
