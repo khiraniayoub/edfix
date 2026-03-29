@@ -28,7 +28,7 @@ const devices = [
 ];
 
 // ⚠️ Reemplaza con tu API key gratuita de https://gnews.io
-const GNEWS_API_KEY = 'TU_API_KEY_AQUI';
+const GNEWS_API_KEY = 'b37cdac48c6f087405916800ed0aef24';
 
 const FALLBACK_NEWS = [
   {
