@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import emailjs from '@emailjs/browser';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Smartphone,
@@ -75,6 +76,17 @@ const staggerContainer = {
   }
 };
 
+// ─── EmailJS Config ─────────────────────────────────────────────────────────
+// 1. Regístrate gratis en https://www.emailjs.com
+// 2. Crea un «Email Service» (Gmail, Outlook…) → copia el Service ID
+// 3. Crea un «Email Template» con las variables: {{device}}, {{model}}, {{problem}}, {{client_email}}
+//    copia el Template ID
+// 4. En «Account» → copia tu Public Key
+const EMAILJS_SERVICE_ID = 'service_boz3dxg';
+const EMAILJS_TEMPLATE_ID = 'template_csvqkvw';
+const EMAILJS_PUBLIC_KEY = 'cYyKyrvoTJm42b1yM';
+// ─────────────────────────────────────────────────────────────────────────────
+
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -82,6 +94,9 @@ function App() {
   const [newsFeed, setNewsFeed] = useState([]);
   const [newsLoading, setNewsLoading] = useState(true);
   const [featuredNews, setFeaturedNews] = useState(null);
+  const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState(null);
+  const formRef = useRef(null);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -135,9 +150,33 @@ function App() {
     document.body.style.overflow = 'auto';
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setFormStep(2); // Show success message
+    setSendError(null);
+    setIsSending(true);
+
+    const formData = new FormData(formRef.current);
+    const templateParams = {
+      device: devices.find(d => d.id === selectedDevice)?.name || selectedDevice,
+      model: formData.get('model'),
+      problem: formData.get('problem'),
+      client_email: formData.get('client_email'),
+    };
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+      setFormStep(2);
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      setSendError('No se pudo enviar. Inténtalo de nuevo o contáctanos por teléfono.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -599,10 +638,11 @@ function App() {
                     <p>Cuéntanos qué le pasa a tu dispositivo y te responderemos rápido.</p>
                   </div>
 
-                  <form onSubmit={handleFormSubmit}>
+                  <form ref={formRef} onSubmit={handleFormSubmit}>
                     <div className="form-group">
                       <label>Tipo de Dispositivo</label>
                       <select
+                        name="device_select"
                         value={selectedDevice || ''}
                         onChange={(e) => setSelectedDevice(e.target.value)}
                         required
@@ -616,21 +656,32 @@ function App() {
 
                     <div className="form-group">
                       <label>Marca y Modelo</label>
-                      <input type="text" placeholder="Ej. iPhone 13 Pro, PS5, etc." required />
+                      <input name="model" type="text" placeholder="Ej. iPhone 13 Pro, PS5, etc." required />
                     </div>
 
                     <div className="form-group">
                       <label>¿Qué problema tiene?</label>
-                      <textarea placeholder="Pantalla rota, no enciende, hace ruido..." required></textarea>
+                      <textarea name="problem" placeholder="Pantalla rota, no enciende, hace ruido..." required></textarea>
                     </div>
 
                     <div className="form-group">
                       <label>Tu E-mail (para enviarte el presupuesto)</label>
-                      <input type="email" placeholder="correo@ejemplo.com" required />
+                      <input name="client_email" type="email" placeholder="correo@ejemplo.com" required />
                     </div>
 
-                    <button type="submit" className="btn-neon" style={{ width: '100%', marginTop: '10px' }}>
-                      Solicitar Presupuesto
+                    {sendError && (
+                      <p style={{ color: '#ff4444', fontSize: '0.85rem', marginTop: '8px', textAlign: 'center' }}>
+                        {sendError}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="btn-neon"
+                      style={{ width: '100%', marginTop: '10px', opacity: isSending ? 0.7 : 1 }}
+                      disabled={isSending}
+                    >
+                      {isSending ? 'Enviando…' : 'Solicitar Presupuesto'}
                     </button>
                   </form>
                 </>
