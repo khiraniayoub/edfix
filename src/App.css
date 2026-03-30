@@ -22,10 +22,11 @@
 }
 
 .hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 40px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
+  width: 100%;
 }
 
 /* Header / Navbar */
@@ -130,25 +131,31 @@
 
 /* Right CTA Hero */
 .hero-cta {
-  padding-left: 20px;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero-cta-title {
   font-size: 4.5rem;
   line-height: 1.05;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .hero-cta-subtitle {
   font-size: 1.25rem;
   color: var(--text-secondary);
   margin-bottom: 40px;
-  max-width: 500px;
+  max-width: 600px;
+  text-align: center;
 }
 
 .btn-group {
   display: flex;
   gap: 20px;
+  justify-content: center;
 }
 
 .stats-row {
@@ -157,6 +164,7 @@
   margin-top: 50px;
   border-top: 1px solid var(--card-border);
   padding-top: 40px;
+  justify-content: center;
 }
 
 .stat-item h4 {

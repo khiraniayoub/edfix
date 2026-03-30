@@ -14,7 +14,8 @@ import {
   ThumbsUp,
   MapPin,
   Phone,
-  Star
+  Star,
+  ShoppingBag
 } from 'lucide-react';
 import { FaYoutube, FaInstagram } from 'react-icons/fa';
 import MatrixBackground from './components/MatrixBackground';
@@ -85,6 +86,115 @@ const staggerContainer = {
 const EMAILJS_SERVICE_ID = 'service_boz3dxg';
 const EMAILJS_TEMPLATE_ID = 'template_csvqkvw';
 const EMAILJS_PUBLIC_KEY = 'cYyKyrvoTJm42b1yM';
+// ─────────────────────────────────────────────────────────────────────────────
+
+const RECOMMENDED_PRODUCTS = [
+  {
+    id: 1,
+    name: 'AULUMU M10 Power Bank',
+    description: 'Batería magnética con diseño futurista Cyberpunk. Carga rápida y estilo único.',
+    image: 'https://m.media-amazon.com/images/I/71qZ-yR56FL._AC_SL1500_.jpg',
+    url: 'https://amzn.to/3PwzOiV',
+    price: '69,99€',
+    category: 'Carga MagSafe'
+  },
+  {
+    id: 2,
+    name: 'iFixit Pro Tech Toolkit',
+    description: 'El kit de herramientas que usamos en el taller para todas las reparaciones.',
+    image: 'https://m.media-amazon.com/images/I/71H2o0t-UuL._AC_SL1500_.jpg',
+    url: 'https://amzn.to/3VQExmG',
+    price: '74,95€',
+    category: 'Herramientas'
+  },
+  {
+    id: 3,
+    name: 'Lámpara de Escritorio LED',
+    description: 'Iluminación profesional para ver hasta el último tornillo de tu móvil.',
+    image: 'https://m.media-amazon.com/images/I/61I0Zf6P+mL._AC_SL1500_.jpg',
+    url: 'https://amzn.to/3VT5gT9',
+    price: '35,99€',
+    category: 'Iluminación'
+  }
+];
+
+const GOOGLE_REVIEWS = [
+  {
+    id: 1,
+    name: 'VINCENT DOMINATI',
+    text: 'Muy profesional y amable.',
+    rating: 5,
+    date: 'Hace 2 semanas',
+    initials: 'VD'
+  },
+  {
+    id: 2,
+    name: 'Erika Spinelli',
+    text: 'Excelente servicio. Rápido, honesto y con una atención impecable.',
+    rating: 5,
+    date: 'Hace 2 semanas',
+    initials: 'ES'
+  },
+  {
+    id: 3,
+    name: 'Cliente Satisfecho',
+    text: 'El mejor taller de Málaga para reparar dispositivos Apple. Recomendado 100%.',
+    rating: 5,
+    date: 'Hace 1 mes',
+    initials: 'CS'
+  }
+];
+
+// ─── Componentes Auxiliares ──────────────────────────────────────────────────
+const ProductCard = ({ product }) => (
+  <motion.div
+    className="product-card"
+    variants={revealVariants}
+    whileHover={{ y: -10 }}
+  >
+    <div className="product-image-container">
+      <img src={product.image} alt={product.name} className="product-image" />
+      <span className="product-category">{product.category}</span>
+    </div>
+    <div className="product-info">
+      <h3 className="product-name">{product.name}</h3>
+      <p className="product-desc">{product.description}</p>
+      <div className="product-footer">
+        <span className="product-price">{product.price}</span>
+        <a
+          href={product.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="amazon-btn"
+        >
+          <ShoppingBag size={18} /> Ver en Amazon
+        </a>
+      </div>
+    </div>
+  </motion.div>
+);
+
+const ReviewCard = ({ review }) => (
+  <motion.div
+    className="review-card glass"
+    variants={revealVariants}
+  >
+    <div className="review-stars">
+      {[...Array(review.rating)].map((_, i) => (
+        <Star key={i} size={16} fill="var(--accent-color)" color="var(--accent-color)" />
+      ))}
+    </div>
+    <p className="review-text">"{review.text}"</p>
+    <div className="review-author">
+      <div className="author-avatar">{review.initials}</div>
+      <div className="author-info">
+        <span className="author-name">{review.name}</span>
+        <span className="review-date">{review.date}</span>
+      </div>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Maps_icon_%282020%29.svg" alt="Google" className="google-icon-small" />
+    </div>
+  </motion.div>
+);
 // ─────────────────────────────────────────────────────────────────────────────
 
 function App() {
@@ -244,25 +354,54 @@ function App() {
                 </div>
               </motion.div>
             </motion.div>
+          </div>
+        </section>
 
-            <motion.div
-              className="latest-news-card"
-              initial={{ opacity: 0, x: 50, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              style={{ backgroundImage: `url('${featuredNews?.image || '/news-robotaxi.png'}')`, cursor: featuredNews?.url ? 'pointer' : 'default' }}
-              onClick={() => featuredNews?.url && window.open(featuredNews.url, '_blank', 'noopener,noreferrer')}
-            >
-              <div className="news-card-overlay">
-                <span className="tag">Noticia del día</span>
-                <h3 className="news-card-title text-gradient">{featuredNews?.title || 'Cargando noticia...'}</h3>
-                <div className="news-card-meta">
-                  <span>{featuredNews?.source || 'EVCanal'}</span>
-                  <span>•</span>
-                  <span>{featuredNews?.date || ''}</span>
+        {/* ─── Reseñas de Google (Nueva Posición) ─── */}
+        <section id="reseñas" className="section testimonials-section" style={{ padding: '60px 0', background: 'rgba(255,107,0,0.02)' }}>
+          <div className="container">
+            <div className="section-header-center" style={{ textAlign: 'center', marginBottom: '60px' }}>
+              <div className="google-rating-summary">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_Maps_icon_%282020%29.svg/1200px-Google_Maps_icon_%282020%29.svg.png" alt="Google" className="google-maps-logo" />
+                <div className="rating-content">
+                  <div className="rating-score" style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
+                    <span className="score-num" style={{ fontSize: '2.5rem', fontWeight: '800' }}>5.0</span>
+                    <div className="stars-row" style={{ display: 'flex', gap: '4px' }}>
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                    </div>
+                  </div>
+                  <p className="rating-count" style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>Basado en 76 reseñas de clientes reales en Málaga</p>
                 </div>
               </div>
+              <h2 className="section-title">Lo que dicen de nosotros</h2>
+            </div>
+
+            <motion.div
+              className="reviews-grid"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+            >
+              {GOOGLE_REVIEWS.map(review => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
             </motion.div>
+
+            <div className="section-footer-center" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
+              <a
+                href="https://www.google.com/search?q=edfix+malaga&oq=edfix+malaga#lrd=0xd72f796b79bac9:0xe971485c2c7c59,1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-google-maps"
+              >
+                Ver todas las reseñas <ArrowRight size={18} />
+              </a>
+            </div>
           </div>
         </section>
 
@@ -491,6 +630,41 @@ function App() {
               </AnimatePresence>
             </div>
           )}
+        </section>
+
+        {/* ─── Novedades y Gadgets ─── */}
+        <section id="gadgets" className="section gadgets-section">
+          <div className="container">
+            <div className="section-header">
+              <div className="title-group">
+                <span className="subtitle">EVC Shop</span>
+                <h2 className="section-title" style={{ textAlign: 'left' }}>Nuestras Recomendaciones</h2>
+                <motion.p className="section-desc" variants={revealVariants}>
+                  Los accesorios y herramientas que usamos en nuestro canal de YouTube
+                </motion.p>
+              </div>
+              <a
+                href="https://youtube.com/@evcanal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-outline"
+              >
+                Ver Reviews <FaYoutube size={18} />
+              </a>
+            </div>
+
+            <motion.div
+              className="products-grid"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={staggerContainer}
+            >
+              {RECOMMENDED_PRODUCTS.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </motion.div>
+          </div>
         </section>
 
         {/* Ubicación / Tienda Física */}
