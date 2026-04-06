@@ -93,7 +93,7 @@ const RECOMMENDED_PRODUCTS = [
     id: 1,
     name: 'AULUMU M10 Power Bank',
     description: 'Batería magnética con diseño futurista Cyberpunk. Carga rápida y estilo único.',
-    image: 'https://m.media-amazon.com/images/I/71qZ-yR56FL._AC_SL1500_.jpg',
+    image: '/gadget-1.png',
     url: 'https://amzn.to/3PwzOiV',
     price: '69,99€',
     category: 'Carga MagSafe'
@@ -102,7 +102,7 @@ const RECOMMENDED_PRODUCTS = [
     id: 2,
     name: 'iFixit Pro Tech Toolkit',
     description: 'El kit de herramientas que usamos en el taller para todas las reparaciones.',
-    image: 'https://m.media-amazon.com/images/I/71H2o0t-UuL._AC_SL1500_.jpg',
+    image: '/gadget-2.png',
     url: 'https://amzn.to/3VQExmG',
     price: '74,95€',
     category: 'Herramientas'
@@ -111,7 +111,7 @@ const RECOMMENDED_PRODUCTS = [
     id: 3,
     name: 'Lámpara de Escritorio LED',
     description: 'Iluminación profesional para ver hasta el último tornillo de tu móvil.',
-    image: 'https://m.media-amazon.com/images/I/61I0Zf6P+mL._AC_SL1500_.jpg',
+    image: '/gadget-3.png',
     url: 'https://amzn.to/3VT5gT9',
     price: '35,99€',
     category: 'Iluminación'
@@ -309,6 +309,7 @@ function App() {
             <a href="#noticias" className="nav-link">Noticias Tech</a>
             <a href="#evcanal" className="nav-link">EVCanal</a>
             <a href="#ubicacion" className="nav-link">Tienda Física</a>
+            <a href="#gadgets" className="nav-link">Recomendaciones</a>
           </div>
           <button className="btn-neon" style={{ padding: '8px 20px', fontSize: '0.9rem' }} onClick={() => openModal()}>
             Pide Presupuesto
