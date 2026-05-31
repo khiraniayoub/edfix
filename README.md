@@ -1,143 +1,108 @@
-# 🚀 Wback - Messaging Backend API
+# EVC - EDfix 🛠️📱
 
-[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-5.2+-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Redis](https://img.shields.io/badge/Redis-Active-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![React](https://img.shields.io/badge/React-19.2-blue?style=for-the-badge&logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?style=for-the-badge&logo=vite)](https://vite.dev/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-12.3-FF00C8?style=for-the-badge&logo=framer-motion)](https://www.framer.com/motion/)
+[![EmailJS](https://img.shields.io/badge/EmailJS-4.4-orange?style=for-the-badge)](https://www.emailjs.com/)
 
-**Wback** es una API REST segura, contenerizada y de alto rendimiento diseñada como el motor backend para aplicaciones de mensajería y chat en tiempo real. Construido sobre **Python**, **Django** y **Django REST Framework (DRF)**, provee una arquitectura sólida para la gestión de usuarios, sesiones seguras mediante JWT y flujos de mensajería escalables.
-
----
-
-## 🗺️ Arquitectura del Sistema
-
-El siguiente diagrama ilustra el flujo de componentes y servicios que componen el ecosistema de **Wback**:
-
-```mermaid
-graph TD
-    Client[Cliente / Frontend] -->|HTTP / HTTPS| API[Django REST Framework]
-    API -->|Persistencia| DB[(PostgreSQL)]
-    API -->|Caché / Canales| Redis[(Redis Broker)]
-```
+**EVC - EDfix** es una plataforma web moderna, interactiva y con estética Cyberpunk/Neón diseñada para el taller físico de reparaciones tecnológicas de **EVCanal** en Málaga. La aplicación combina la captación de clientes mediante presupuestos interactivos con la divulgación de contenido tecnológico.
 
 ---
 
 ## ✨ Características Principales
 
-- 🔐 **Autenticación Robusta:** Flujo seguro con **JWT** (JSON Web Tokens) usando `djangorestframework-simplejwt`.
-- 👤 **Gestión de Perfiles Avanzada:** Modelo de usuario personalizado con inicio de sesión por correo electrónico, carga de avatares (imágenes de perfil), números de teléfono y panel personalizable (`/me`).
-- 📝 **Documentación Interactiva:** Esquema OpenAPI 3.0 dinámico visualizable a través de **Swagger UI** y **Redoc** (`drf-spectacular`).
-- 🐳 **Entorno Contenerizado:** Listo para producción y desarrollo local con **Docker** y **Docker Compose**.
-- ⚡ **Herramientas de Última Generación:** Gestión de paquetes y dependencias ultra-rápida con **`uv`**.
-- 🔄 **Mensajería & Notificaciones:** Canales preparados para integración en tiempo real respaldados por **Redis**.
+*   **Estética Visual Premium:** Fondo matricial interactivo (`MatrixBackground`), animaciones suaves con Framer Motion, efecto *glassmorphism* y gradientes de luces de neón.
+*   **Formulario de Presupuesto Automatizado:** Un flujo de solicitud interactivo en 2 pasos conectado con **EmailJS** para enviar solicitudes de presupuesto de reparación directamente al correo del taller.
+*   **Feed de Noticias en Tiempo Real:** Integración con la API de **GNews** para mostrar las últimas novedades tecnológicas en España, con soporte para noticias de respaldo (fallback) automáticas.
+*   **Hub de YouTube Integrado:** Panel interactivo en forma de monitor clásico para visualizar el último vídeo de **EVCanal** (con más de 11.9k suscriptores) y enlace de suscripción rápida.
+*   **Recomendaciones de Gadgets:** Sección de herramientas del taller y gadgets recomendados con enlaces de afiliación de Amazon.
+*   **Reseñas de Google Integradas:** Panel con la calificación actual de 5.0 estrellas del taller basada en las opiniones de clientes en Málaga.
+*   **Sección de Tarifas Transparentes:** Tabla detallada de precios base para mantenimiento y reparaciones comunes en consolas, informática y gestiones.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tecnologías Utilizadas
 
-| Componente | Tecnología | Propósito |
-| :--- | :--- | :--- |
-| **Backend** | Python 3.12+ / Django 5.2 | Framework Web de alto rendimiento |
-| **API Engine** | Django REST Framework | Creación y serialización de endpoints REST |
-| **Base de Datos** | PostgreSQL 15 | Almacenamiento relacional robusto |
-| **Broker/Cache** | Redis | Gestión de colas, caché y mensajería |
-| **Gestor de Paquetes**| `uv` (Astraea/Astral) | Resolución ultrarrápida de dependencias |
-| **Contenerización** | Docker / Docker Compose | Consistencia de entornos y despliegue rápido |
+*   **React 19 (Hooks, State, Refs)** - Biblioteca principal para la interfaz de usuario.
+*   **Vite 8** - Herramienta de compilación rápida y entorno de desarrollo.
+*   **Framer Motion 12** - Animaciones dinámicas de entrada, transiciones y micro-interacciones.
+*   **Lucide React & React Icons** - Paquete de iconos vectoriales modernos.
+*   **EmailJS** - Servicio integrado en el cliente para el envío de formularios de contacto por correo electrónico sin backend propio.
+*   **GNews API** - Consumo de titulares de noticias tecnológicas de actualidad.
+
+---
+
+## 🚀 Instalación y Configuración Local
+
+Sigue estos pasos para arrancar el proyecto en tu entorno local:
+
+### 1. Clonar el Repositorio
+```bash
+git clone https://github.com/khiraniayoub/edfix.git
+cd evc-edfix
+```
+
+### 2. Instalar Dependencias
+```bash
+npm install
+```
+
+### 3. Configurar API Keys
+Abre el archivo [App.jsx](file:///c:/Users/Ayoub/.gemini/antigravity/scratch/evc-edfix/src/App.jsx) y edita las siguientes constantes con tus credenciales:
+
+*   **EmailJS** (Crea una cuenta gratuita en [EmailJS](https://www.emailjs.com/)):
+    ```javascript
+    const EMAILJS_SERVICE_ID = 'tu_service_id';
+    const EMAILJS_TEMPLATE_ID = 'tu_template_id';
+    const EMAILJS_PUBLIC_KEY = 'tu_public_key';
+    ```
+    *Asegúrate de definir en tu plantilla de EmailJS las siguientes variables: `{{device}}`, `{{model}}`, `{{problem}}` y `{{client_email}}`.*
+
+*   **GNews API** (Obtén tu API key gratuita en [GNews.io](https://gnews.io/)):
+    ```javascript
+    const GNEWS_API_KEY = 'tu_api_key';
+    ```
+
+### 4. Servidor de Desarrollo
+Para levantar el servidor local con Hot Module Replacement (HMR):
+```bash
+npm run dev
+```
+La aplicación estará disponible en `http://localhost:5173`.
+
+### 5. Compilación para Producción
+Para generar los archivos listos para desplegar en tu hosting:
+```bash
+npm run build
+```
+Los archivos optimizados se generarán en la carpeta `/dist`.
 
 ---
 
 ## 📁 Estructura del Proyecto
 
-```bash
-wback/
-├── apps/
-│   ├── users/          # Registro, Login, Gestión de perfil (/me) y Cambio de contraseñas.
-│   ├── message/        # (Base) Canales de chat, envío de mensajes y salas.
-│   ├── notifications/  # (Base) Alertas y push notifications.
-│   └── utils/          # Helpers y utilidades compartidas.
-├── wback/
-│   ├── settings.py     # Configuraciones globales del proyecto.
-│   └── urls.py         # Enrutamiento general de endpoints y docs.
+```text
+evc-edfix/
+├── public/                 # Recursos estáticos (Logos, imágenes de gadgets, etc.)
+├── src/
+│   ├── assets/             # Recursos adicionales de estilo y medios
+│   ├── components/         # Componentes modulares
+│   │   └── MatrixBackground.jsx # Efecto visual de fondo de matriz de código lluvia
+│   ├── App.css             # Estilos CSS generales y variables de diseño
+│   ├── App.jsx             # Estructura principal y lógica de negocio
+│   ├── index.css           # Estilos base y de reset
+│   └── main.jsx            # Punto de entrada de React
+├── index.html              # Estructura base del HTML con SEO local optimizado
+├── package.json            # Scripts y dependencias del proyecto
+└── vite.config.js          # Configuración del empaquetador Vite
 ```
 
 ---
 
-## 🛣️ Catálogo de Endpoints (API Reference)
+## 📝 SEO Local Optimizado
+El archivo [index.html](file:///c:/Users/Ayoub/.gemini/antigravity/scratch/evc-edfix/index.html) está preconfigurado para optimizar la indexación en motores de búsqueda, apuntando a palabras clave de alto rendimiento como:
+*   *Reparaciones tecnológicas en Málaga*
+*   *Taller experto de reparaciones de móviles, consolas, tablets y ordenadores*
+*   *EVCanal Málaga*
 
-### Autenticación y Registro
-*   `POST /api/users/register/` - Registra un nuevo usuario en la plataforma.
-*   `POST /api/users/login/` - Inicia sesión y devuelve los tokens JWT (`access` y `refresh`).
-*   `POST /api/users/token/refresh/` - Renueva el token de acceso JWT expirado usando el refresh token.
-*   `POST /api/users/change-password/` 🔒 - Permite cambiar la contraseña del usuario autenticado.
-
-### Perfil del Usuario
-*   `GET /api/users/me/` 🔒 - Obtiene la información del perfil del usuario autenticado.
-*   `PATCH /api/users/me/` 🔒 - Actualiza de forma parcial los datos del perfil (nombre, teléfono, foto, etc.).
-
-### Administración (Solo Administradores 🛡️)
-*   `GET /api/users/` 🔒 - Listado de todos los usuarios registrados.
-*   `GET /api/users/{id}/` 🔒 - Información detallada de un usuario por ID.
-*   `PUT/PATCH /api/users/{id}/` 🔒 - Edición completa o parcial de un usuario por ID.
-*   `DELETE /api/users/{id}/` 🔒 - Elimina permanentemente a un usuario por ID.
-
-### Documentación e Interfaces
-*   `GET /api/docs/` - Documentación interactiva con **Swagger UI**.
-*   `GET /api/redoc/` - Documentación limpia con **Redoc**.
-*   `GET /api/schema/` - Descarga del archivo YAML de especificación OpenAPI.
-
-*Nota: Los endpoints marcados con 🔒 requieren el header `Authorization: Bearer <access_token>`.*
-
----
-
-## 📦 Guía de Instalación y Uso
-
-### Variables de Entorno
-Crea un archivo `.env` en la raíz del proyecto tomando como referencia el archivo `envSample`:
-```bash
-cp envSample .env
-```
-
-Ajusta los valores de base de datos, claves secretas y contraseñas de Redis según sea necesario.
-
-### Opción A: Ejecutar con Docker (Recomendado)
-Asegúrate de tener instalados **Docker** y **Docker Compose**.
-
-1. **Construir y levantar contenedores:**
-   ```bash
-   docker compose up --build
-   ```
-2. **Aplicar migraciones automáticas (en otra pestaña):**
-   ```bash
-   docker compose exec wback python manage.py migrate
-   ```
-3. **Crear un superusuario de pruebas (Admin):**
-   ```bash
-   docker compose exec wback python manage.py createsuperuser
-   ```
-4. **Acceder a la API:**
-   - Documentación interactiva: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
-   - Consola de Administración: [http://localhost:8000/admin/](http://localhost:8000/admin/)
-
----
-
-### Opción B: Ejecución Local (con `uv`)
-Si prefieres ejecutarlo nativamente sin contenedores:
-
-1. **Instalar dependencias y sincronizar entorno:**
-   ```bash
-   uv sync
-   ```
-2. **Aplicar migraciones:**
-   ```bash
-   uv run wback/manage.py migrate
-   ```
-3. **Crear un superusuario:**
-   ```bash
-   uv run wback/manage.py createsuperuser
-   ```
-4. **Iniciar el servidor de desarrollo:**
-   ```bash
-   uv run wback/manage.py runserver
-   ```
 
