@@ -430,17 +430,28 @@ function App() {
     <>
       <MatrixBackground />
 
-      {/* ─── Botón Flotante WhatsApp ─── */}
-      <a
-        href="https://wa.me/34614290002?text=Hola%2C%20me%20gustar%C3%ADa%20pedir%20un%20presupuesto%20para%20la%20reparaci%C3%B3n%20de%20mi%20dispositivo."
-        target="_blank"
-        rel="noopener noreferrer"
-        className="whatsapp-fab"
-        aria-label="Contactar por WhatsApp"
-      >
-        <span className="whatsapp-tooltip">¡Escríbenos!</span>
-        <FaWhatsapp size={30} />
-      </a>
+      {/* ─── Botones Flotantes (Llamar y WhatsApp) ─── */}
+      <div className="fab-container">
+        <a
+          href="tel:+34614290002"
+          className="call-fab"
+          aria-label="Llamar por teléfono"
+        >
+          <span className="fab-tooltip">¡Llámanos!</span>
+          <Phone size={26} />
+        </a>
+
+        <a
+          href="https://wa.me/34614290002?text=Hola%2C%20me%20gustar%C3%ADa%20pedir%20un%20presupuesto%20para%20la%20reparaci%C3%B3n%20de%20mi%20dispositivo."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="whatsapp-fab"
+          aria-label="Contactar por WhatsApp"
+        >
+          <span className="fab-tooltip">¡Escríbenos!</span>
+          <FaWhatsapp size={30} />
+        </a>
+      </div>
 
       {/* Navbar */}
       <nav className="navbar">
