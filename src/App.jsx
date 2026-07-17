@@ -17,7 +17,7 @@ import {
   Star,
   ShoppingBag
 } from 'lucide-react';
-import { FaYoutube, FaInstagram } from 'react-icons/fa';
+import { FaYoutube, FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import MatrixBackground from './components/MatrixBackground';
 import './App.css';
 
@@ -429,6 +429,18 @@ function App() {
   return (
     <>
       <MatrixBackground />
+
+      {/* ─── Botón Flotante WhatsApp ─── */}
+      <a
+        href="https://wa.me/34614290002?text=Hola%2C%20me%20gustar%C3%ADa%20pedir%20un%20presupuesto%20para%20la%20reparaci%C3%B3n%20de%20mi%20dispositivo."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="whatsapp-fab"
+        aria-label="Contactar por WhatsApp"
+      >
+        <span className="whatsapp-tooltip">¡Escríbenos!</span>
+        <FaWhatsapp size={30} />
+      </a>
 
       {/* Navbar */}
       <nav className="navbar">
