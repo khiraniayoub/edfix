@@ -652,17 +652,24 @@ function App() {
               <h2 className="section-title">Lo que dicen de nosotros</h2>
             </div>
 
-            <motion.div
-              className="reviews-grid"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-            >
-              {GOOGLE_REVIEWS.map(review => (
-                <ReviewCard key={review.id} review={review} />
-              ))}
-            </motion.div>
+            <div className="reviews-marquee-container">
+              <div className="reviews-marquee-track">
+                <div className="marquee-content-group">
+                  {[...GOOGLE_REVIEWS, ...GOOGLE_REVIEWS].map((review, i) => (
+                    <div key={`g1-${review.id}-${i}`} className="marquee-item">
+                      <ReviewCard review={review} />
+                    </div>
+                  ))}
+                </div>
+                <div className="marquee-content-group" aria-hidden="true">
+                  {[...GOOGLE_REVIEWS, ...GOOGLE_REVIEWS].map((review, i) => (
+                    <div key={`g2-${review.id}-${i}`} className="marquee-item">
+                      <ReviewCard review={review} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
             <div className="section-footer-center" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
               <a

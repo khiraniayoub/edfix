@@ -800,6 +800,57 @@ footer {
   }
 }
 
+/* ─── Reviews Marquee ──────────────────────────────────────────────────────── */
+.reviews-marquee-container {
+  overflow: hidden;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 20px 0;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.reviews-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 40s linear infinite;
+}
+
+.reviews-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.marquee-content-group {
+  display: flex;
+  gap: 30px;
+  padding-right: 30px;
+}
+
+.marquee-item {
+  width: 350px;
+  flex-shrink: 0;
+}
+
+/* Forzar que la card ocupe todo el alto para igualarlas */
+.marquee-item .review-card {
+  height: 100%;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .marquee-item {
+    width: 280px;
+  }
+}
+
 /* ─── WhatsApp Floating Action Button ──────────────────────────────────── */
 .whatsapp-fab {
   position: fixed;
