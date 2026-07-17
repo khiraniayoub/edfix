@@ -28,33 +28,20 @@ const devices = [
   { id: 'pc', icon: Laptop, name: 'PC / Mac' },
 ];
 
-// ⚠️ Reemplaza con tu API key gratuita de https://gnews.io
-const GNEWS_API_KEY = 'b37cdac48c6f087405916800ed0aef24';
+// ─── RSS Feeds de medios tech españoles (sin API key, sin límites) ───
+const RSS_FEEDS = [
+  { url: 'https://www.xataka.com/feedburner.xml', source: 'Xataka', category: 'Tecnología' },
+  { url: 'https://hipertextual.com/feed', source: 'Hipertextual', category: 'Tech & Ciencia' },
+];
 
 const FALLBACK_NEWS = [
   {
     id: 1,
-    title: 'Uber invierte 1.250 millones en Rivian para lanzar 50.000 robotaxis eléctricos',
-    category: 'IA & Movilidad',
-    image: '/news-robotaxi.png',
+    title: 'Mantente al día con las últimas novedades tech',
+    category: 'Tecnología',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop',
     date: 'Hoy',
-    url: 'https://techcrunch.com',
-  },
-  {
-    id: 2,
-    title: 'Cómo cambiar la pasta térmica de tu PS5 paso a paso',
-    category: 'Guías de Reparación',
-    image: 'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?q=80&w=800&auto=format&fit=crop',
-    date: 'Hace 5 horas',
-    url: 'https://ifixit.com',
-  },
-  {
-    id: 3,
-    title: 'Samsung Galaxy Book6 Ultra llega con GPU RTX 5070 e IA integrada',
-    category: 'Lanzamientos',
-    image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop',
-    date: 'Hoy',
-    url: 'https://theverge.com',
+    url: 'https://www.xataka.com',
   },
 ];
 
@@ -92,27 +79,27 @@ const RECOMMENDED_PRODUCTS = [
   {
     id: 1,
     name: 'AULUMU M10 Power Bank',
-    description: 'Batería magnética con diseño futurista Cyberpunk. Carga rápida y estilo único.',
+    description: 'Batería externa magnética de 10000mAh con diseño cyberpunk transparente, cable USB-C y cargador de Apple Watch integrado.',
     image: '/gadget-1.png',
-    url: 'https://amzn.to/3PwzOiV',
+    url: 'https://www.amazon.es/dp/B0C6K6G9N2',
     price: '69,99€',
     category: 'Carga MagSafe'
   },
   {
     id: 2,
     name: 'iFixit Pro Tech Toolkit',
-    description: 'El kit de herramientas que usamos en el taller para todas las reparaciones.',
+    description: 'El kit de herramientas profesional que usamos en el taller con destornillador de precisión de aluminio y 64 puntas de acero.',
     image: '/gadget-2.png',
-    url: 'https://amzn.to/3VQExmG',
+    url: 'https://www.amazon.es/dp/B01GF0KV6G',
     price: '74,95€',
     category: 'Herramientas'
   },
   {
     id: 3,
     name: 'Lámpara de Escritorio LED',
-    description: 'Iluminación profesional para ver hasta el último tornillo de tu móvil.',
+    description: 'Lámpara profesional de brazo articulado de metal con pinza de sujeción para mesa de reparación y brillo regulable.',
     image: '/gadget-3.png',
-    url: 'https://amzn.to/3VT5gT9',
+    url: 'https://www.amazon.es/dp/B0B5G2R8S1',
     price: '35,99€',
     category: 'Iluminación'
   }
@@ -145,7 +132,107 @@ const GOOGLE_REVIEWS = [
   }
 ];
 
+// ─── FAQ Data + Componente ──────────────────────────────────────────────────
+const FAQ_ITEMS = [
+  {
+    q: '¿Cuánto tarda una reparación?',
+    a: 'La mayoría de reparaciones se realizan el mismo día o en 24 horas. Para averías más complejas, como la recuperación avanzada de datos o el cambio de componentes específicos, el plazo puede extenderse a 48-72 horas.'
+  },
+  {
+    q: '¿Ofrecéis garantía en las reparaciones?',
+    a: 'Sí. Todas nuestras reparaciones incluyen 6 meses de garantía sobre la pieza sustituida y la mano de obra. Si algo falla en ese período, lo revisamos sin coste adicional.'
+  },
+  {
+    q: '¿El diagnóstico tiene coste?',
+    a: 'El diagnóstico previo es completamente gratuito y sin compromiso. Te daremos un presupuesto cerrado antes de comenzar cualquier reparación. Si no aceptas, no pagas nada.'
+  },
+  {
+    q: '¿Dónde está el taller EDfix en Málaga?',
+    a: 'Estamos en Calle Sevilla, 30, Distrito Centro, 29009 Málaga. Puedes llamarnos al 614 29 00 02 o solicitar presupuesto directamente desde esta web.'
+  },
+  {
+    q: '¿Qué dispositivos reparáis?',
+    a: 'Reparamos móviles (iPhone, Samsung Galaxy, Xiaomi y otros), tablets, consolas (PS5, Xbox Series X/S, Nintendo Switch y más) y ordenadores portátiles y de sobremesa (PC y Mac).'
+  },
+  {
+    q: '¿Cuánto cuesta la limpieza de una PS5?',
+    a: 'La limpieza interna de PS5 con cambio de metal líquido tiene un precio fijo de 50€. Para otras consolas, el mantenimiento parte desde 40€. La reparación de drift con joystick magnético cuesta desde 19€.'
+  },
+  {
+    q: '¿Cuánto cuesta formatear un ordenador?',
+    a: 'El formateo de ordenador o portátil tiene un precio fijo de 40€. El cambio de disco con instalación del sistema operativo parte desde 55€. El clonado de disco SSD/HDD tiene un coste desde 35€.'
+  },
+];
+
+const FaqItem = ({ question, answer }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <motion.div
+      variants={revealVariants}
+      className="faq-item glass"
+      itemScope
+      itemProp="mainEntity"
+      itemType="https://schema.org/Question"
+    >
+      <button
+        className={`faq-question ${open ? 'faq-open' : ''}`}
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+      >
+        <span itemProp="name">{question}</span>
+        <span className="faq-chevron">{open ? '−' : '+'}</span>
+      </button>
+      <div
+        className="faq-answer-wrapper"
+        style={{ maxHeight: open ? '300px' : '0px' }}
+        itemScope
+        itemProp="acceptedAnswer"
+        itemType="https://schema.org/Answer"
+      >
+        <p className="faq-answer" itemProp="text">{answer}</p>
+      </div>
+    </motion.div>
+  );
+};
+
 // ─── Componentes Auxiliares ──────────────────────────────────────────────────
+const PRICING_CATEGORIES = [
+  {
+    title: 'Consolas',
+    color: '#00a3ff',
+    items: [
+      { name: 'Mantenimiento + Limpieza interna', price: 'desde 40 €' },
+      { name: 'PS5 – limpieza interna + cambio de metal líquido', price: '50 €' },
+      { name: 'Reemplazo de puerto HDMI', price: 'desde 79 €' },
+      { name: 'Reparación de Drift con joystick magnético + calibración', price: '19 € / 29 €' }
+    ]
+  },
+  {
+    title: 'Informática',
+    color: '#00a3ff',
+    items: [
+      { name: 'Formateo de ordenador o portátil', price: '40 €' },
+      { name: 'Cambio de disco + instalación de sistema', price: 'desde 55 €' },
+      { name: 'Clonado de disco SSD/HDD', price: 'desde 35 €' },
+      { name: 'Mantenimiento ordenador sobremesa', price: '40 €' },
+      { name: 'Mantenimiento ordenador portátil', price: 'desde 45 €' },
+      { name: 'Recuperación básica de datos', price: 'desde 45 €' },
+      { name: 'Recuperación avanzada de datos', price: 'Bajo ppt' }
+    ]
+  },
+  {
+    title: 'Gestiones y Otros',
+    color: '#00a3ff',
+    items: [
+      { name: 'Informe técnico para seguro', price: 'desde 20 €' },
+      { name: 'Traspaso de datos / Copia de seguridad', price: 'desde 25 €' },
+      { name: 'Configuración inicial de smartphone/PC', price: '15 €' },
+      { name: 'Protector de pantalla (Hidrogel)', price: '15 €' },
+      { name: 'Limpieza y desinfección exterior', price: '10 €' }
+    ]
+  }
+];
+
 const ProductCard = ({ product }) => (
   <motion.div
     className="product-card"
@@ -191,7 +278,12 @@ const ReviewCard = ({ review }) => (
         <span className="author-name">{review.name}</span>
         <span className="review-date">{review.date}</span>
       </div>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Maps_icon_%282020%29.svg" alt="Google" className="google-icon-small" />
+      <svg viewBox="0 0 24 24" className="google-icon-small" width="18" height="18">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+      </svg>
     </div>
   </motion.div>
 );
@@ -207,39 +299,79 @@ function App() {
   const [visibleNewsCount, setVisibleNewsCount] = useState(3);
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState(null);
+  const [latestVideoId, setLatestVideoId] = useState('v_n8TK0F_Y0'); // Fallback: NZXT H6 RGB+ Review
   const formRef = useRef(null);
 
   useEffect(() => {
-    const fetchNews = async () => {
-      if (GNEWS_API_KEY === 'TU_API_KEY_AQUI') {
-        setNewsFeed(FALLBACK_NEWS);
-        setFeaturedNews(FALLBACK_NEWS[0]);
-        setNewsLoading(false);
-        return;
-      }
+    const fetchLatestVideo = async () => {
       try {
-        const res = await fetch(
-          `https://gnews.io/api/v4/top-headlines?category=technology&lang=es&country=es&max=10&apikey=${GNEWS_API_KEY}`
+        const feedUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=UCOXacswpxt4CvHuVziK3Iug';
+        const response = await fetch(
+          `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`
         );
-        const data = await res.json();
-        if (data.articles && data.articles.length > 0) {
-          const articles = data.articles.map((a, i) => ({
-            id: i + 1,
-            title: a.title,
-            category: 'Tecnología',
-            image: a.image || `https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop`,
-            date: new Date(a.publishedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
-            url: a.url,
-            source: a.source?.name || 'Tech News',
-          }));
-          setFeaturedNews(articles[0]);
-          setNewsFeed(articles.slice(1)); // Guardamos el resto
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          // Filter out YouTube Shorts (vertical videos don't look good in landscape iframe)
+          const longVideos = data.items.filter(item => !item.link.includes('/shorts/'));
+          const targetVideo = longVideos.length > 0 ? longVideos[0] : data.items[0];
+          
+          // Extract video ID from link or guid
+          const linkMatch = targetVideo.link.match(/[?&]v=([^&#]+)/);
+          const guidMatch = targetVideo.guid.match(/yt:video:(.+)/);
+          const videoId = linkMatch ? linkMatch[1] : guidMatch ? guidMatch[1] : null;
+          
+          if (videoId) {
+            setLatestVideoId(videoId);
+          }
+        }
+      } catch (error) {
+        // Silently fail - fallback video ID is already set
+        console.warn('Could not fetch latest video, using fallback:', error.message);
+      }
+    };
+    fetchLatestVideo();
+  }, []);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const feedPromises = RSS_FEEDS.map(async (feed) => {
+          const res = await fetch(
+            `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`
+          );
+          const data = await res.json();
+          if (data.status === 'ok' && data.items?.length > 0) {
+            return data.items.map((item, i) => ({
+              id: `${feed.source}-${i}`,
+              title: item.title,
+              category: feed.category,
+              image: item.thumbnail || item.enclosure?.thumbnail || item.enclosure?.link || `https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop`,
+              date: new Date(item.pubDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
+              url: item.link,
+              source: feed.source,
+              pubDate: new Date(item.pubDate),
+            }));
+          }
+          return [];
+        });
+
+        const results = await Promise.allSettled(feedPromises);
+        const allArticles = results
+          .filter(r => r.status === 'fulfilled')
+          .flatMap(r => r.value)
+          .sort((a, b) => b.pubDate - a.pubDate) // Most recent first
+          .slice(0, 9); // Keep up to 9 articles
+
+        if (allArticles.length > 0) {
+          setFeaturedNews(allArticles[0]);
+          setNewsFeed(allArticles.slice(1));
         } else {
           setNewsFeed(FALLBACK_NEWS);
           setFeaturedNews(FALLBACK_NEWS[0]);
         }
       } catch (err) {
-        console.error('Error cargando noticias:', err);
+        console.error('Error cargando noticias RSS:', err);
         setNewsFeed(FALLBACK_NEWS);
         setFeaturedNews(FALLBACK_NEWS[0]);
       } finally {
@@ -310,6 +442,7 @@ function App() {
             <a href="#evcanal" className="nav-link">EVCanal</a>
             <a href="#ubicacion" className="nav-link">Tienda Física</a>
             <a href="#gadgets" className="nav-link">Recomendaciones</a>
+            <a href="#precios" className="nav-link">Precios</a>
           </div>
           <button className="btn-neon" style={{ padding: '8px 20px', fontSize: '0.9rem' }} onClick={() => openModal()}>
             Pide Presupuesto
@@ -327,10 +460,10 @@ function App() {
               animate="visible"
               variants={staggerContainer}
             >
-              <motion.h2 variants={revealVariants} className="hero-cta-title">
+              <motion.h1 variants={revealVariants} className="hero-cta-title">
                 ¿Dispositivo roto? <br />
                 <span className="text-gradient">Déjalo como nuevo.</span>
-              </motion.h2>
+              </motion.h1>
               <motion.p variants={revealVariants} className="hero-cta-subtitle">
                 Taller experto de reparaciones tecnológicas en Málaga. Si lo analizamos en nuestro canal, sabemos cómo arreglarlo.
               </motion.p>
@@ -346,7 +479,7 @@ function App() {
 
               <motion.div variants={revealVariants} className="stats-row">
                 <div className="stat-item">
-                  <h4>11.9k</h4>
+                  <h4>12.1k</h4>
                   <p>Suscriptores en YT</p>
                 </div>
                 <div className="stat-item">
@@ -356,75 +489,6 @@ function App() {
               </motion.div>
             </motion.div>
           </div>
-        </section>
-
-        {/* ─── Reseñas de Google (Nueva Posición) ─── */}
-        <section id="reseñas" className="section testimonials-section" style={{ padding: '60px 0', background: 'rgba(255,107,0,0.02)' }}>
-          <div className="container">
-            <div className="section-header-center" style={{ textAlign: 'center', marginBottom: '60px' }}>
-              <div className="google-rating-summary">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_Maps_icon_%282020%29.svg/1200px-Google_Maps_icon_%282020%29.svg.png" alt="Google" className="google-maps-logo" />
-                <div className="rating-content">
-                  <div className="rating-score" style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
-                    <span className="score-num" style={{ fontSize: '2.5rem', fontWeight: '800' }}>5.0</span>
-                    <div className="stars-row" style={{ display: 'flex', gap: '4px' }}>
-                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
-                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
-                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
-                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
-                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
-                    </div>
-                  </div>
-                  <p className="rating-count" style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>Basado en 76 reseñas de clientes reales en Málaga</p>
-                </div>
-              </div>
-              <h2 className="section-title">Lo que dicen de nosotros</h2>
-            </div>
-
-            <motion.div
-              className="reviews-grid"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-            >
-              {GOOGLE_REVIEWS.map(review => (
-                <ReviewCard key={review.id} review={review} />
-              ))}
-            </motion.div>
-
-            <div className="section-footer-center" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-              <a
-                href="https://www.google.com/search?q=edfix+malaga&oq=edfix+malaga#lrd=0xd72f796b79bac9:0xe971485c2c7c59,1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-google-maps"
-              >
-                Ver todas las reseñas <ArrowRight size={18} />
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* About Banner */}
-        <section className="container">
-          <motion.div
-            className="about-banner glass"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={revealVariants}
-          >
-            <div className="about-content">
-              <h2>Del YouTube a tus manos</h2>
-              <p>
-                EVCanal no es solo un canal de tecnología con más de <strong>11.9k suscriptores</strong>,
-                es nuestra pasión hecha realidad. EVC - EDfix nace para traerte toda esa experiencia
-                directamente a un <strong>taller físico en Málaga</strong>. Conocemos las entrañas de
-                cada dispositivo porque los abrimos, los analizamos y los ponemos a prueba antes de que salgan al mercado.
-              </p>
-            </div>
-          </motion.div>
         </section>
 
         {/* Taller / Services Section */}
@@ -495,6 +559,187 @@ function App() {
           </motion.div>
         </section>
 
+        {/* Pricing Section */}
+        <section id="precios" className="section container">
+          <motion.h2
+            className="section-title text-gradient"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={revealVariants}
+          >
+            Precios y Servicios
+          </motion.h2>
+          <motion.p
+            className="section-subtitle"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={revealVariants}
+          >
+            Transparencia por delante. Aquí tienes una referencia de nuestros servicios más comunes.
+          </motion.p>
+
+          <motion.div
+            className="pricing-grid"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+          >
+            {PRICING_CATEGORIES.map((category, index) => (
+              <motion.div key={index} variants={revealVariants} className="pricing-card glass">
+                <h3 className="pricing-title" style={{ color: category.color }}>{category.title}</h3>
+                <ul className="pricing-list">
+                  {category.items.map((item, i) => (
+                    <li key={i} className="pricing-item">
+                      <span className="pricing-name">{item.name}</span>
+                      <span className="pricing-cost">{item.price}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            className="pricing-disclaimer"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={revealVariants}
+          >
+            <p>Trabajamos con precios cerrados en algunos servicios habituales y con presupuesto personalizado en reparaciones que dependen del modelo, la pieza o el tipo de avería. Diagnóstico previo y presupuesto sin compromiso.</p>
+          </motion.div>
+        </section>
+
+        {/* ─── Reseñas de Google (Nueva Posición) ─── */}
+        <section id="reseñas" className="section testimonials-section" style={{ padding: '60px 0', background: 'rgba(255,107,0,0.02)' }}>
+          <div className="container">
+            <div className="section-header-center" style={{ textAlign: 'center', marginBottom: '60px' }}>
+              <div className="google-rating-summary">
+                <svg className="google-maps-logo" width="40" height="40" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '15px' }}>
+                  <path fill="#4285F4" d="M24 44s16-14 16-24c0-8.837-7.163-16-16-16S8 11.163 8 20c0 10 16 24 16 24z" />
+                  <path fill="#0F9D58" d="M24 28c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z" />
+                  <circle fill="#F4B400" cx="24" cy="20" r="4" />
+                </svg>
+                <div className="rating-content">
+                  <div className="rating-score" style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
+                    <span className="score-num" style={{ fontSize: '2.5rem', fontWeight: '800' }}>5.0</span>
+                    <div className="stars-row" style={{ display: 'flex', gap: '4px' }}>
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                      <Star size={20} fill="#FBBC04" color="#FBBC04" />
+                    </div>
+                  </div>
+                  <p className="rating-count" style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>Basado en 76 reseñas de clientes reales en Málaga</p>
+                </div>
+              </div>
+              <h2 className="section-title">Lo que dicen de nosotros</h2>
+            </div>
+
+            <motion.div
+              className="reviews-grid"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+            >
+              {GOOGLE_REVIEWS.map(review => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
+            </motion.div>
+
+            <div className="section-footer-center" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
+              <a
+                href="https://www.google.com/search?q=edfix+malaga&oq=edfix+malaga#lrd=0xd72f796b79bac9:0xe971485c2c7c59,1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-google-maps"
+              >
+                Ver todas las reseñas <ArrowRight size={18} />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* About Banner */}
+        <section className="container">
+          <motion.div
+            className="about-banner glass"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={revealVariants}
+          >
+            <div className="about-content">
+              <h2>Del YouTube a tus manos</h2>
+              <p>
+                EVCanal no es solo un canal de tecnología con más de <strong>12.1k suscriptores</strong>,
+                es nuestra pasión hecha realidad. EVC - EDfix nace para traerte toda esa experiencia
+                directamente a un <strong>taller físico en Málaga</strong>. Conocemos las entrañas de
+                cada dispositivo porque los abrimos, los analizamos y los ponemos a prueba antes de que salgan al mercado.
+              </p>
+            </div>
+          </motion.div>
+        </section>
+
+
+
+        {/* Últimos Trabajos Section */}
+        <section id="ultimos-trabajos" className="container section">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
+            <motion.div variants={revealVariants} style={{ textAlign: 'center', marginBottom: '50px' }}>
+              <h2 className="text-gradient">Últimos Casos de Éxito</h2>
+              <p className="section-subtitle">
+                Una imagen vale más que mil palabras. Así quedan los equipos que pasan por nuestras manos.
+              </p>
+            </motion.div>
+
+            <div className="repairs-gallery">
+              <motion.div variants={revealVariants} className="repair-card glass">
+                <div className="repair-img-wrapper">
+                  <img src="/repair-1.jpg" alt="Reparación iPhone - Tapa trasera" />
+                </div>
+                <div className="repair-card-info">
+                  <h4>iPhone Pro – Tapa Trasera</h4>
+                  <p>Cambio completo de cristal trasero roto</p>
+                  <span className="repair-badge">✓ Reparado</span>
+                </div>
+              </motion.div>
+
+              <motion.div variants={revealVariants} className="repair-card glass">
+                <div className="repair-img-wrapper">
+                  <img src="/repair-2.jpg" alt="Reparación Samsung - Cámara" />
+                </div>
+                <div className="repair-card-info">
+                  <h4>Samsung Galaxy – Cámara</h4>
+                  <p>Sustitución de cristal de cámara dañado</p>
+                  <span className="repair-badge">✓ Reparado</span>
+                </div>
+              </motion.div>
+
+              <motion.div variants={revealVariants} className="repair-card glass">
+                <div className="repair-img-wrapper">
+                  <img src="/repair-3.jpg" alt="Reparación iPhone - Pantalla" />
+                </div>
+                <div className="repair-card-info">
+                  <h4>iPhone – Cambio de Pantalla</h4>
+                  <p>Pantalla rota sustituida por original</p>
+                  <span className="repair-badge">✓ Reparado</span>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </section>
+
         {/* YouTube Hub */}
         <section id="evcanal" className="section container">
           <motion.h2
@@ -525,9 +770,8 @@ function App() {
           >
             <div className="monitor-frame">
               <div className="video-container">
-                {/* Mocked iframe for visual purposes. In real usage, replace with actual YouTube embed link if needed. We use a stock video placeholder or empty iframe block. */}
                 <iframe
-                  src="https://www.youtube.com/embed/xCXZzYtiR-E"
+                  src={`https://www.youtube.com/embed/${latestVideoId}`}
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -542,7 +786,7 @@ function App() {
                 <div className="channel-avatar">EVC</div>
                 <div>
                   <div className="channel-name">EVCanal</div>
-                  <div className="channel-subs">11.9K suscriptores</div>
+                  <div className="channel-subs">12.1K suscriptores</div>
                 </div>
               </div>
               <a href="https://www.youtube.com/@EVCanal?sub_confirmation=1" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
@@ -757,10 +1001,62 @@ function App() {
             </div>
           </motion.div>
         </section>
+
+        {/* ─── FAQ Section – GEO Optimizado ─── */}
+        <section
+          id="faq"
+          className="section container"
+          aria-label="Preguntas frecuentes sobre reparaciones en Málaga"
+          itemScope
+          itemType="https://schema.org/FAQPage"
+        >
+          <motion.h2
+            className="section-title text-gradient"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={revealVariants}
+          >
+            Preguntas Frecuentes
+          </motion.h2>
+          <motion.p
+            className="section-subtitle"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={revealVariants}
+          >
+            Todo lo que necesitas saber antes de traernos tu dispositivo al taller de Málaga.
+          </motion.p>
+
+          <motion.div
+            className="faq-list"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            variants={staggerContainer}
+          >
+            {FAQ_ITEMS.map((item, index) => (
+              <FaqItem key={index} question={item.q} answer={item.a} />
+            ))}
+          </motion.div>
+
+          {/* Texto factual adicional para GEO / motores de IA */}
+          <div className="geo-factual-block" aria-hidden="false">
+            <p>
+              <strong>EDfix Reparaciones</strong> (también conocido como <strong>EVC - EDfix</strong>) es un taller de reparación tecnológica ubicado en
+              <strong> Calle Sevilla, 30, Distrito Centro, 29009 Málaga</strong>. Ofrecemos reparación de móviles, tablets, consolas y ordenadores
+              con diagnóstico gratuito, presupuesto sin compromiso y <strong>6 meses de garantía</strong> en todas las intervenciones.
+              Somos el taller detrás del canal de YouTube <strong>EVCanal</strong>, donde analizamos y ponemos a prueba dispositivos tecnológicos.
+              Más de <strong>5.000 equipos reparados</strong> y una puntuación de <strong>5,0 estrellas en Google</strong> basada en 76 reseñas de clientes reales de Málaga.
+              Teléfono de contacto: <strong>614 29 00 02</strong>.
+            </p>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
-      <footer>
+      < footer style={{ background: 'rgba(128, 128, 128, 0.15)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }} >
         <div className="container">
           <div className="footer-content">
             <div className="nav-logo">
@@ -771,7 +1067,7 @@ function App() {
             </div>
 
             <div className="footer-socials">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
+              <a href="https://www.instagram.com/evc.edfix" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="EVC EDfix en Instagram">
                 <FaInstagram size={20} />
               </a>
               <a href="https://www.youtube.com/@EVCanal" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="YouTube">
@@ -783,16 +1079,16 @@ function App() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--card-border)', paddingTop: '20px', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
             <p>© {new Date().getFullYear()} EVC - EDfix. Todos los derechos reservados.</p>
             <div style={{ display: 'flex', gap: '20px' }}>
-              <a href="#">Privacidad</a>
-              <a href="#">Términos</a>
-              <a href="#">Cookies</a>
+              <a href="/privacidad.html" title="Política de Privacidad">Privacidad</a>
+              <a href="/terminos.html" title="Términos y Condiciones">Términos</a>
+              <a href="/cookies.html" title="Política de Cookies">Cookies</a>
             </div>
           </div>
         </div>
-      </footer>
+      </footer >
 
       {/* Form Modal */}
-      <AnimatePresence>
+      < AnimatePresence >
         {isModalOpen && (
           <motion.div
             className="modal-overlay"
@@ -889,8 +1185,9 @@ function App() {
               )}
             </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        )
+        }
+      </AnimatePresence >
     </>
   );
 }
