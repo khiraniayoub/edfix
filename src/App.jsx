@@ -14,8 +14,7 @@ import {
   ThumbsUp,
   MapPin,
   Phone,
-  Star,
-  ShoppingBag
+  Star
 } from 'lucide-react';
 import { FaYoutube, FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import MatrixBackground from './components/MatrixBackground';
@@ -75,34 +74,61 @@ const EMAILJS_TEMPLATE_ID = 'template_csvqkvw';
 const EMAILJS_PUBLIC_KEY = 'cYyKyrvoTJm42b1yM';
 // ─────────────────────────────────────────────────────────────────────────────
 
-const RECOMMENDED_PRODUCTS = [
+const YT_REVIEWS = [
   {
     id: 1,
-    name: 'AULUMU M10 Power Bank',
-    description: 'Batería externa magnética de 10000mAh con diseño cyberpunk transparente, cable USB-C y cargador de Apple Watch integrado.',
-    image: '/gadget-1.png',
-    url: 'https://www.amazon.es/dp/B0C6K6G9N2',
-    price: '69,99€',
-    category: 'Carga MagSafe'
+    title: 'NZXT H6 RGB+ 2026 Review: ¿el nuevo rey de las cajas gaming?',
+    videoId: 'v_n8TK0F_Y0',
+    url: 'https://www.youtube.com/watch?v=v_n8TK0F_Y0',
+    thumbnail: 'https://i3.ytimg.com/vi/v_n8TK0F_Y0/hqdefault.jpg',
+    date: '4 jul 2026',
+    category: 'Gaming'
   },
   {
     id: 2,
-    name: 'iFixit Pro Tech Toolkit',
-    description: 'El kit de herramientas profesional que usamos en el taller con destornillador de precisión de aluminio y 64 puntas de acero.',
-    image: '/gadget-2.png',
-    url: 'https://www.amazon.es/dp/B01GF0KV6G',
-    price: '74,95€',
-    category: 'Herramientas'
+    title: 'Logitech G305 X Superlight Review: ¿El regreso del rey?',
+    videoId: 'dCaicsiFrLE',
+    url: 'https://www.youtube.com/watch?v=dCaicsiFrLE',
+    thumbnail: 'https://i1.ytimg.com/vi/dCaicsiFrLE/hqdefault.jpg',
+    date: '2 jul 2026',
+    category: 'Periféricos'
   },
   {
     id: 3,
-    name: 'Lámpara de Escritorio LED',
-    description: 'Lámpara profesional de brazo articulado de metal con pinza de sujeción para mesa de reparación y brillo regulable.',
-    image: '/gadget-3.png',
-    url: 'https://www.amazon.es/dp/B0B5G2R8S1',
-    price: '35,99€',
-    category: 'Iluminación'
-  }
+    title: 'AOHI 280W: ¿el cargador que carga TODO tu setup?',
+    videoId: 'xNiESnIChi8',
+    url: 'https://www.youtube.com/watch?v=xNiESnIChi8',
+    thumbnail: 'https://i1.ytimg.com/vi/xNiESnIChi8/hqdefault.jpg',
+    date: '19 jun 2026',
+    category: 'Accesorios'
+  },
+  {
+    id: 4,
+    title: 'Probé el accesorio MagSafe más completo y extraño',
+    videoId: 'CuDwyLP0e_I',
+    url: 'https://www.youtube.com/watch?v=CuDwyLP0e_I',
+    thumbnail: 'https://i4.ytimg.com/vi/CuDwyLP0e_I/hqdefault.jpg',
+    date: '10 jun 2026',
+    category: 'MagSafe'
+  },
+  {
+    id: 5,
+    title: 'Transformé mi Mando de PS5 en un CUSTOM Transparente',
+    videoId: 'ykFp6KWXD3g',
+    url: 'https://www.youtube.com/watch?v=ykFp6KWXD3g',
+    thumbnail: 'https://i2.ytimg.com/vi/ykFp6KWXD3g/hqdefault.jpg',
+    date: '5 jun 2026',
+    category: 'Consolas'
+  },
+  {
+    id: 6,
+    title: 'Montando un PC Mini-ITX en la NUEVA NZXT H2 Flow: ¿la caja compacta perfecta?',
+    videoId: '_cVdCFcjOoQ',
+    url: 'https://www.youtube.com/watch?v=_cVdCFcjOoQ',
+    thumbnail: 'https://i4.ytimg.com/vi/_cVdCFcjOoQ/hqdefault.jpg',
+    date: '3 may 2026',
+    category: 'PC Gaming'
+  },
 ];
 
 const GOOGLE_REVIEWS = [
@@ -233,32 +259,37 @@ const PRICING_CATEGORIES = [
   }
 ];
 
-const ProductCard = ({ product }) => (
-  <motion.div
-    className="product-card"
+const VideoCard = ({ video }) => (
+  <motion.a
+    href={video.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="video-card"
     variants={revealVariants}
-    whileHover={{ y: -10 }}
+    whileHover={{ y: -8 }}
   >
-    <div className="product-image-container">
-      <img src={product.image} alt={product.name} className="product-image" />
-      <span className="product-category">{product.category}</span>
-    </div>
-    <div className="product-info">
-      <h3 className="product-name">{product.name}</h3>
-      <p className="product-desc">{product.description}</p>
-      <div className="product-footer">
-        <span className="product-price">{product.price}</span>
-        <a
-          href={product.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="amazon-btn"
-        >
-          <ShoppingBag size={18} /> Ver en Amazon
-        </a>
+    <div className="video-thumb-container">
+      <img
+        src={video.thumbnail}
+        alt={video.title}
+        className="video-thumb"
+        onError={(e) => { e.target.src = `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`; }}
+      />
+      <span className="video-category">{video.category}</span>
+      <div className="video-play-overlay">
+        <div className="play-icon">
+          <FaYoutube size={40} />
+        </div>
       </div>
     </div>
-  </motion.div>
+    <div className="video-info">
+      <h3 className="video-title">{video.title}</h3>
+      <div className="video-footer">
+        <span className="video-date">{video.date}</span>
+        <span className="watch-btn">Ver Review <ArrowRight size={14} /></span>
+      </div>
+    </div>
+  </motion.a>
 );
 
 const ReviewCard = ({ review }) => (
@@ -912,10 +943,10 @@ function App() {
           <div className="container">
             <div className="section-header">
               <div className="title-group">
-                <span className="subtitle">EVC Shop</span>
-                <h2 className="section-title" style={{ textAlign: 'left' }}>Nuestras Recomendaciones</h2>
+                <span className="subtitle">EVCanal en YouTube</span>
+                <h2 className="section-title" style={{ textAlign: 'left' }}>Nuestras Reviews</h2>
                 <motion.p className="section-desc" variants={revealVariants}>
-                  Los accesorios y herramientas que usamos en nuestro canal de YouTube
+                  Los últimos vídeos de reviews de productos de nuestro canal
                 </motion.p>
               </div>
               <a
@@ -935,8 +966,8 @@ function App() {
               viewport={{ once: true, margin: "-50px" }}
               variants={staggerContainer}
             >
-              {RECOMMENDED_PRODUCTS.map(product => (
-                <ProductCard key={product.id} product={product} />
+              {YT_REVIEWS.map(video => (
+                <VideoCard key={video.id} video={video} />
               ))}
             </motion.div>
           </div>

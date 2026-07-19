@@ -165,115 +165,147 @@ a {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
-.product-card {
+@media (max-width: 1100px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Video Card ─── */
+.video-card {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--card-border);
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.product-card:hover {
-  transform: translateY(-10px);
-  border-color: var(--accent-color);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 163, 255, 0.1);
+.video-card:hover {
+  border-color: #ff0000;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 24px rgba(255, 0, 0, 0.15);
   background: rgba(255, 255, 255, 0.04);
 }
 
-.product-image-container {
-  height: 240px;
+.video-thumb-container {
   position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: #111;
 }
 
-.product-image {
+.video-thumb {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: 20px;
-  transition: transform 0.5s ease;
+  object-fit: cover;
+  transition: transform 0.5s ease, filter 0.4s ease;
+  display: block;
 }
 
-.product-card:hover .product-image {
-  transform: scale(1.1);
+.video-card:hover .video-thumb {
+  transform: scale(1.07);
+  filter: brightness(0.7);
 }
 
-.product-category {
+.video-play-overlay {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: var(--accent-color);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(0, 163, 255, 0.4);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: rgba(0, 0, 0, 0.35);
 }
 
-.product-info {
-  padding: 25px;
+.video-card:hover .video-play-overlay {
+  opacity: 1;
+}
+
+.play-icon {
+  color: #ff0000;
+  filter: drop-shadow(0 0 12px rgba(255,0,0,0.6));
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+
+.video-card:hover .play-icon {
+  transform: scale(1.2);
+}
+
+.video-category {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+}
+
+.video-info {
+  padding: 18px 20px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
-.product-name {
-  font-size: 1.25rem;
-  margin-bottom: 12px;
-  color: var(--text-primary);
-}
-
-.product-desc {
-  color: var(--text-secondary);
+.video-title {
   font-size: 0.95rem;
-  margin-bottom: 25px;
-  line-height: 1.5;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.45;
   display: -webkit-box;
-  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin: 0;
 }
 
-.product-footer {
+.video-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
 }
 
-.product-price {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--accent-color);
+.video-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }
 
-.amazon-btn {
+.watch-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #232f3e;
-  color: #ff9900;
-  padding: 10px 16px;
-  border-radius: 10px;
+  gap: 5px;
+  font-size: 0.82rem;
   font-weight: 700;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  border: 1px solid #37475a;
+  color: #ff0000;
+  transition: gap 0.2s ease;
 }
 
-.amazon-btn:hover {
-  background: #37475a;
-  transform: scale(1.05);
+.video-card:hover .watch-btn {
+  gap: 8px;
 }
 
 /* ─── Testimonials Section ─── */
