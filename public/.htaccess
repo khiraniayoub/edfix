@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.edfix\.es [NC]
+RewriteRule ^(.*)$ https://edfix.es/$1 [L,R=301]
