@@ -495,7 +495,7 @@ function App() {
             <a href="#noticias" className="nav-link">Noticias Tech</a>
             <a href="#evcanal" className="nav-link">EVCanal</a>
             <a href="#ubicacion" className="nav-link">Tienda Física</a>
-            <a href="#gadgets" className="nav-link">Recomendaciones</a>
+            <a href="#gadgets" className="nav-link">Reviews</a>
             <a href="#precios" className="nav-link">Precios</a>
           </div>
           <button className="btn-neon" style={{ padding: '8px 20px', fontSize: '0.9rem' }} onClick={() => openModal()}>
